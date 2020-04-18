@@ -20,17 +20,17 @@ var Slogan = [
 ]
 
 var type_stats = {
-	Type.INSTIGATOR : {"speed" : 25, "commitment" : 100, "in_mob" : true},
-	Type.PAWN : {"speed" : 12.5},
-	Type.DEMIHUMAN : {"speed" : 25},
-	Type.CLERIC : {"speed" : 25},
-	Type.ELF : {"speed" : 25},
-	Type.ALCHEMIST : {"speed" : 25},
-	Type.SORCERER : {"speed" : 25},
+	Type.INSTIGATOR : {"speed" : 50, "commitment" : 100, "in_mob" : true},
+	Type.PAWN : {"speed" : 25},
+	Type.DEMIHUMAN : {"speed" : 50},
+	Type.CLERIC : {"speed" : 50},
+	Type.ELF : {"speed" : 50},
+	Type.ALCHEMIST : {"speed" : 50},
+	Type.SORCERER : {"speed" : 50},
 }
 
 var in_mob = false
-var speed = 12.5
+var speed = 25
 var type = Type.PAWN
 var commitment = 0
 var trigger_slogans = []
@@ -43,9 +43,9 @@ var stats = {}
 var velocity = Vector2.ZERO
 var target = Vector2.ZERO
 
-var roam_radius = 37.5
-var slow_radius = 2.75
-var arrive_distance = 17.5
+var roam_radius = 75
+var slow_radius = 5.5
+var arrive_distance = 35
 var follow = false
 
 

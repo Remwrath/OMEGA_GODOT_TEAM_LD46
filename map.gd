@@ -5,9 +5,9 @@ onready var level = $TestLevel
 
 func _ready():
 	# Thinking of an instagator as a NPC type that is always a mob member (there should only be one).
-	add_npc(Vector2(-25, 25), NPC.Type.INSTIGATOR)
-	add_npc(Vector2(-25, 50), NPC.Type.INSTIGATOR)
-	add_npc(Vector2(-25, 75), NPC.Type.INSTIGATOR)
+	add_npc(Vector2(-50, 50), NPC.Type.INSTIGATOR)
+	add_npc(Vector2(-50, 100), NPC.Type.INSTIGATOR)
+	add_npc(Vector2(-50, 150), NPC.Type.INSTIGATOR)
 	generate_random_npcs(10)
 
 
@@ -22,10 +22,10 @@ func add_npc(position: Vector2, type):
 func generate_random_npcs(amount):
 	for _i in range(amount):
 		var type = NPC.Type.DEMIHUMAN if randf() < 0.5 else NPC.Type.CLERIC
-		var npc_pos = Vector2(rand_range(1, 200), rand_range(1, 200))
+		var npc_pos = Vector2(rand_range(-200, 200), rand_range(-200, 200))
 		#if the NPC would spawn inside a wall, pick a different spawn point
 		while not is_valid_spawn_point(npc_pos):
-			npc_pos = Vector2(rand_range(1, 200), rand_range(1, 200))
+			npc_pos = Vector2(rand_range(-200, 200), rand_range(-200, 200))
 		add_npc(npc_pos, type)
 
 # checks whether a chosen spawn point is inside a wall

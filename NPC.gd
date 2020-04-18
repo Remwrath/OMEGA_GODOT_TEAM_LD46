@@ -21,6 +21,18 @@ func _physics_process(delta):
 	# move the NPC by whatever the velocity was set to in other functions
 	move_and_slide(velocity)
 
+#call to make the npc join the mob
+func join_mob():
+	pass
+
+#call to make the npc leave the mob
+func leave_mob():
+	pass
+
+#call to make the npc consider joining the mob
+func consider_joining_mob():
+	pass
+
 func start_move():
 	# start moving the NPC in a random cardinal direction. This could be easily changed to moving in a completely random direction if people would prefer.
 	var dir = randf() # generate a random number to determine which of four directions we will go in
@@ -46,3 +58,6 @@ func attack_angle(angle):
 # begin an attack in the direction of the specified vector; for example, attack_vector(Vector2.RIGHT) begins a right-facing attack
 func attack_vector(direction):
 	attack_angle(atan2(direction.y, direction.x))
+	
+func buff(buff_range):
+	pass

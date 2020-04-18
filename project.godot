@@ -19,6 +19,10 @@ config/name="OmegaTeamLudumDare46"
 run/main_scene="res://gamestart.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://Global.tscn"
+
 [rendering]
 
 quality/driver/driver_name="GLES2"

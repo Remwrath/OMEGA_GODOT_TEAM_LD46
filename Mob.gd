@@ -5,16 +5,16 @@ signal mob_started_movement
 signal mob_stopped_movement
 
 # Steering vars.
-export var max_speed := 30
-export var slow_radius := 7.5
+export var max_speed := 60
+export var slow_radius := 15
 var _velocity := Vector2.ZERO
-const DISTANCE_THRESHOLD := 3
+const DISTANCE_THRESHOLD := 6
 
 var target_position: Vector2
 var track_cursor := false
 
 # Stats holder for the mob.
-var stats = {"speed": 25}
+var stats = {"speed": 50}
 
 # List of npcs that makes up the mob? 
 var members = []

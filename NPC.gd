@@ -14,7 +14,7 @@ enum Type {
 }
 
 # Dictionary for any stats that may vary from NPC to NPC.
-var stats = {"speed": 100, "type": Type.INSTIGATOR, "in_mob": false}
+export var stats = {"speed": 100, "type": Type.INSTIGATOR, "in_mob": false}
 
 # Current velocity of the NPC, used to move the NPC during _physics_process.
 # To manually move the NPC, set this instead of calling a move function directly.

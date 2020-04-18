@@ -54,7 +54,8 @@ func _physics_process(_delta):
 		slow_radius)
 	
 	_velocity = move_and_slide(_velocity)
-
+	print(self.position)
+	
 # GROUP
 
 func chant(message):

@@ -1,12 +1,6 @@
 class_name NPC
 extends KinematicBody2D
 
-var Slogan = [
-	"Eggs", #placeholder
-	"Milk",
-	"Bread"
-]
-
 enum Type {
 	INSTIGATOR,
 	PAWN,
@@ -19,6 +13,12 @@ enum Type {
 	# Keep types agnostic
 }
 
+var Slogan = [
+	"Eggs", #placeholder
+	"Milk",
+	"Bread"
+]
+
 var type_stats = {
 	Type.INSTIGATOR : {"speed" : 100, "commitment" : 100, "in_mob" : true},
 	Type.PAWN : {"speed" : 50},
@@ -28,10 +28,6 @@ var type_stats = {
 	Type.ALCHEMIST : {"speed" : 100},
 	Type.SORCERER : {"speed" : 100},
 }
-
-func set_stats(stats):
-	for stat in stats:
-		self[stat] = stats[stat]
 
 var in_mob = false
 var speed = 100
@@ -58,8 +54,8 @@ func _ready():
 	# time the script is restarted, unless we call this function to
 	# generate a time-based seed.
 	randomize()
-	#generate random slogans that the npc will react to
-	trigger_slogans = [Slogan[randi()%len(Slogan)-1], Slogan[randi()%len(Slogan)-1]]
+	# Generate random slogans that the npc will react to.
+	trigger_slogans = [Slogan[randi() % len(Slogan) - 1], Slogan[randi() % len(Slogan) - 1]]
 	# When MoveTimer is triggered, the NPC should start moving.
 	# warning-ignore-all:return_value_discarded
 	$MoveTimer.connect("timeout", self, "start_move")
@@ -73,12 +69,12 @@ func _ready():
 	$MoveTimer.wait_time = rand_range(0.0, 2.0)
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 
-	#set states for type overriding defaults
+	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
 
-func _physics_process(_delta):
-	# Move the NPC by whatever the velocity was set to in other functions.
 
+# Move the NPC by whatever the velocity was set to in other functions.
+func _physics_process(_delta):
 	if in_mob:
 		target = get_mob().global_position
 
@@ -86,7 +82,7 @@ func _physics_process(_delta):
 		velocity,
 		global_position,
 		target,
-		speed) #add mass for dragging
+		speed) # Add mass for dragging.
 
 	move_and_slide(velocity)
 	if not in_mob:
@@ -94,17 +90,21 @@ func _physics_process(_delta):
 	
 	if global_position.distance_to(target) < arrive_distance and not follow:
 		set_physics_process(false)
-		#set up timer and wander when not in_mob or for in_mob but with distance to mob larger than x
+		# Set up timer and wander when not in_mob or for in_mob but with distance to mob larger than x.
 
-func _process(_delta):
-	pass
+
+func set_stats(stats):
+	for stat in stats:
+		self[stat] = stats[stat]
+
 
 func _follow_mob():
 	follow = true
 	set_physics_process(true)
 
+
 func _unfollow_mob():
-	#check in which range it is, it may wander in a given radius
+	# Check in which range it is, it may wander in a given radius.
 	follow = false
 
 
@@ -112,16 +112,17 @@ func get_mob():
 	var mob = get_node("../Mob")
 	return mob
 
-#should only be called if in_mob false
+
+# Should only be called if in_mob is false.
 func react(message, mob):
 	if trigger_slogans.find(message):
 		commitment += 1
 	if commitment > 10:
 		join_mob()
 	# Receive message from chant and decide if joining mob.
-	#mock code to join always and test following
+	# Mock code to join always and test following.
 	join_mob()
-	pass
+
 
 # Call to make the NPC join the mob.
 func join_mob():
@@ -131,6 +132,7 @@ func join_mob():
 
 	get_mob().gain_member(self);
 	self.in_mob = true
+
 
 # Call to make the NPC leave the mob.
 func leave_mob():
@@ -143,7 +145,7 @@ func start_move():
 		return
 
 	randomize()
-	var random_angle = randf() * 2 * PI
+	var random_angle = randf() * TAU
 	randomize()
 	var random_radius = (randf() * roam_radius) / 2 + roam_radius / 2
 	target = global_position + Vector2(cos(random_angle) * random_radius, sin(random_angle) * random_radius)

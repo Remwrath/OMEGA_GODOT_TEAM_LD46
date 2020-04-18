@@ -58,6 +58,9 @@ func _physics_process(delta):
 #GROUP
 
 func chant(message):
+	var nearby_bodies = $ChantArea.get_overlapping_bodies()
+	for body in nearby_bodies:
+		pass
 	#for npc in bodies in ChantArea call 
 	pass
 

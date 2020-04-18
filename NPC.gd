@@ -36,6 +36,10 @@ func get_mob():
 	var mob = get_node("/root/map/Mob")
 	return mob
 
+func react(message, mob):
+	#receive message from chant and decide if joining mob
+	pass
+
 #call to make the npc join the mob
 func join_mob():
 	#Global.get_mob().gain_member(self);

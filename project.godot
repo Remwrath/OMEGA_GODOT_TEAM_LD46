@@ -8,20 +8,24 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "NPC",
+"language": "GDScript",
+"path": "res://NPC.gd"
+} ]
 _global_script_class_icons={
-
+"NPC": ""
 }
 
 [application]
 
 config/name="OmegaTeamLudumDare46"
-run/main_scene="res://gamestart.tscn"
+run/main_scene="res://Start.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Global="*res://Global.tscn"
 Steering="*res://Steering.gd"
 
 [input]

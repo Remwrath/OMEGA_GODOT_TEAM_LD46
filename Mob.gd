@@ -59,11 +59,7 @@ func _unhandled_input(event):
 			track_cursor = false
 			target_position = get_global_mouse_position() # GUI will add target on objective.
 			set_process(true)
-	
-	if event.is_action_pressed("secondary_click"): # Just for test.
-		chant("Join the protest") # Message should bring some info to make the NPC decide.
 
-# GROUP
 
 func chant(message):
 	var nearby_bodies = $OuterArea.get_overlapping_bodies()

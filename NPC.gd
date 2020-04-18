@@ -13,7 +13,7 @@ enum Type {
 	# Keep types agnostic
 }
 
-var Slogan = [
+const SLOGANS = [
 	"Eggs", #placeholder
 	"Milk",
 	"Bread"
@@ -56,7 +56,7 @@ func _ready():
 	# generate a time-based seed.
 	randomize()
 	# Generate random slogans that the npc will react to.
-	trigger_slogans = [Slogan[randi() % len(Slogan) - 1], Slogan[randi() % len(Slogan) - 1]]
+	trigger_slogans = [SLOGANS[randi() % len(SLOGANS) - 1], SLOGANS[randi() % len(SLOGANS) - 1]]
 	# When MoveTimer is triggered, the NPC should start moving.
 	# warning-ignore-all:return_value_discarded
 	$MoveTimer.connect("timeout", self, "start_move")
@@ -123,7 +123,13 @@ func get_mob():
 func react(message, mob):
 	if trigger_slogans.find(message):
 		commitment += 1
+		print(name + " has increased his commitment to " + str(commitment))
+	
 	test_commitment()
+
+	# Receive message from chant and decide if joining mob.
+	# Mock code to join always and test following.
+	#join_mob()
 
 
 # Call to make the NPC join the mob.

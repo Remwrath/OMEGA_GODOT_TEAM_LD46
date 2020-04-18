@@ -4,10 +4,10 @@
 [ext_resource path="res://icon.png" type="Texture" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
-radius = 140.0
+radius = 35.0
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 300.0
+radius = 75.0
 
 [node name="Mob" type="Area2D"]
 script = ExtResource( 1 )
@@ -23,15 +23,16 @@ shape = SubResource( 2 )
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 
-[node name="icon" type="Sprite" parent="."]
-texture = ExtResource( 2 )
-
-[node name="Label" type="Label" parent="icon"]
-margin_left = -63.4669
-margin_top = -50.1055
-margin_right = 76.5331
-margin_bottom = -36.1055
+[node name="Label" type="Label" parent="."]
+margin_left = -69.0239
+margin_top = -31.3886
+margin_right = 70.9761
+margin_bottom = -17.3886
 text = "MOB MOB MOB MOB"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="icon" type="Sprite" parent="."]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 2 )

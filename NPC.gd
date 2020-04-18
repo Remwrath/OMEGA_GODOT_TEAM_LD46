@@ -17,16 +17,30 @@ enum Type {
 	SORCERER, # Wall spell to block knights.
 	# Wizard(male) witch(female) sorcerer(agnostic)
 	# Keep types agnostic
-	# Define stats for each?
 }
 
-# Dictionary for any stats that may vary from NPC to NPC.
-var in_mob = false
-export var stats = {
-	"speed" : 100,
-	"type" : Type.PAWN,
-	"commitment" : 0 #0 not committed 100 fully commited
+var type_stats = {
+	Type.INSTIGATOR : {"speed" : 100, "commitment" : 100, "in_mob" : true},
+	Type.PAWN : {"speed" : 50},
+	Type.DEMIHUMAN : {"speed" : 100},
+	Type.CLERIC : {"speed" : 100},
+	Type.ELF : {"speed" : 100},
+	Type.ALCHEMIST : {"speed" : 100},
+	Type.SORCERER : {"speed" : 100},
 }
+
+func set_stats(stats):
+	for stat in stats:
+		self[stat] = stats[stat]
+
+var in_mob = false
+var speed = 100
+var type = Type.PAWN
+var commitment = 0
+var trigger_slogans = []
+
+# Dictionary for any stats that may vary from NPC to NPC.
+var stats = {}
 
 # Current velocity of the NPC, used to move the NPC during _physics_process.
 # To manually move the NPC, set this instead of calling a move function directly.
@@ -41,7 +55,7 @@ func _ready():
 	# generate a time-based seed.
 	randomize()
 	#generate random slogans that the npc will react to
-	stats.trigger_slogans = [Slogan[randi()%len(Slogan)-1], Slogan[randi()%len(Slogan)-1]]
+	trigger_slogans = [Slogan[randi()%len(Slogan)-1], Slogan[randi()%len(Slogan)-1]]
 	# When MoveTimer is triggered, the NPC should start moving.
 	# warning-ignore-all:return_value_discarded
 	$MoveTimer.connect("timeout", self, "start_move")
@@ -54,22 +68,22 @@ func _ready():
 	# Randomise the timers.
 	$MoveTimer.wait_time = rand_range(0.0, 2.0)
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
-	if stats.type == Type.INSTIGATOR:
-		stats.commitment = 100
-		join_mob();
+
+	#set states for type overriding defaults
+	set_stats(type_stats[type])
 
 func _physics_process(_delta):
 	# Move the NPC by whatever the velocity was set to in other functions.
-	
+
 	if in_mob:
 		target = get_mob().global_position
-		
+
 	velocity = Steering.arrive_to(
 		velocity,
 		global_position,
 		target,
-		stats.speed) #add mass for dragging
-	
+		speed) #add mass for dragging
+
 	move_and_slide(velocity)
 
 
@@ -90,11 +104,11 @@ func get_mob():
 	var mob = get_node("../Mob")
 	return mob
 
-#should only be called if stats.in_mob false
+#should only be called if in_mob false
 func react(message, mob):
-	if stats.trigger_slogans.find(message):
-		stats.commitment += 1
-	if stats.commitment > 10:
+	if trigger_slogans.find(message):
+		commitment += 1
+	if commitment > 10:
 		join_mob()
 	# Receive message from chant and decide if joining mob.
 	#mock code to join always and test following
@@ -116,7 +130,7 @@ func start_move():
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 	if self.in_mob:
 		return
-	
+
 	randomize()
 	var random_angle = randf() * 2 * PI
 	randomize()

@@ -37,3 +37,12 @@ func start_move():
 func stop_move():
 	# stop moving the NPC
 	velocity = Vector2.ZERO
+	
+# begin an attack at the specified angle in radians
+func attack_angle(angle):
+	$Attack.rotation = angle
+	$AnimationPlayer.play("attack")
+
+# begin an attack in the direction of the specified vector; for example, attack_vector(Vector2.RIGHT) begins a right-facing attack
+func attack_vector(direction):
+	attack_angle(atan2(direction.y, direction.x))

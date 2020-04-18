@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends Area2D
 # This is for controlling the mob as an entity. NPCs in turn interact with this mob.
 
 # Steering vars.
@@ -20,7 +20,7 @@ var members = []
 var state = "idle"
 
 func _ready():
-	set_physics_process(false)
+	set_process(false)
 
 # MOVEMENT 
 
@@ -29,21 +29,21 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed: #follow cursor.
 			track_cursor = true
-			set_physics_process(true)
+			set_process(true)
 		if event.is_action_released('click'): # Reach click point.
 			# A target object may be placed on map upon mouse release.
 			track_cursor = false
 			target_position = get_global_mouse_position() # GUI will add target on objective.
-			set_physics_process(true)
+			set_process(true)
 
 
-func _physics_process(_delta):
+func _process(_delta):
 	if track_cursor:
 		target_position = get_global_mouse_position()
 	var dist = global_position.distance_to(target_position)
 	
 	if dist < DISTANCE_THRESHOLD:
-		set_physics_process(false)
+		set_process(false)
 		return
 	
 	_velocity = Steering.arrive_to(
@@ -53,13 +53,14 @@ func _physics_process(_delta):
 		max_speed,
 		slow_radius)
 	
-	_velocity = move_and_slide(_velocity)
+	self.position += _velocity * _delta
+	#_velocity = move_and_slide(_velocity)
 	print(self.position)
 	
 # GROUP
 
 func chant(message):
-	var nearby_bodies = $ChantArea.get_overlapping_bodies()
+	var nearby_bodies = $OuterArea.get_overlapping_bodies()
 	for body in nearby_bodies:
 		pass
 	# For npc in bodies in ChantArea call.

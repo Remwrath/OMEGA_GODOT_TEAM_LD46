@@ -51,6 +51,7 @@ func consider_joining_mob():
 	pass
 
 func start_move():
+	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 	if stats.in_mob:
 		return
 	# start moving the NPC in a random cardinal direction. This could be easily changed to moving in a completely random direction if people would prefer.
@@ -66,6 +67,7 @@ func start_move():
 		velocity = Vector2.DOWN * stats["speed"]
 	
 func stop_move():
+	$MoveTimer.wait_time = rand_range(0.0, 2.0)
 	# stop moving the NPC
 	velocity = Vector2.ZERO
 	

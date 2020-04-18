@@ -21,16 +21,19 @@ enum Type {
 }
 
 # Dictionary for any stats that may vary from NPC to NPC.
+var in_mob = false
 export var stats = {
 	"speed" : 100,
 	"type" : Type.PAWN,
-	"in_mob" : false,
 	"commitment" : 0 #0 not committed 100 fully commited
 }
 
 # Current velocity of the NPC, used to move the NPC during _physics_process.
 # To manually move the NPC, set this instead of calling a move function directly.
 var velocity = Vector2.ZERO
+var target = Vector2.ZERO
+var roam_radius = 80.0
+var slow_radius = 15.0
 
 func _ready():
 	# Random number generation will always result in the same values each
@@ -57,13 +60,31 @@ func _ready():
 
 func _physics_process(_delta):
 	# Move the NPC by whatever the velocity was set to in other functions.
+	
+	if in_mob:
+		target = get_mob().global_position
+		
+	velocity = Steering.arrive_to(
+		velocity,
+		global_position,
+		target,
+		stats.speed) #add mass for dragging
+	
 	move_and_slide(velocity)
 
 
 func _process(_delta):
-	if stats.in_mob:
-		velocity = (get_mob().position - position).normalized() * stats["speed"]
+	pass
 
+func _follow_mob():
+	print("NPC moves")
+	set_physics_process(true)
+
+func _unfollow_mob():
+	#check in which range it is, it may wander in a given radius
+	print("NPC stopped")
+	#do not stop immediately, try to reach inner circle (need radius)
+	set_physics_process(false)
 
 func get_mob():
 	var mob = get_node("../Mob")
@@ -76,33 +97,38 @@ func react(message, mob):
 	if stats.commitment > 10:
 		join_mob()
 	# Receive message from chant and decide if joining mob.
+	#mock code to join always and test following
+	join_mob()
 	pass
 
 # Call to make the NPC join the mob.
 func join_mob():
 	#Global.get_mob().gain_member(self);
-	stats.in_mob = true
-
+	get_mob().gain_member(self);
+	self.in_mob = true
 
 # Call to make the NPC leave the mob.
 func leave_mob():
-	stats.in_mob = false
+	self.in_mob = false
 
 
 func start_move():
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
-	if stats.in_mob:
+	if self.in_mob:
 		return
-	# Start moving the NPC in a random cardinal direction.
-	# This could be easily changed to moving in a completely random direction if preferred.
-	var dir = int(rand_range(0, 4))
-	velocity = polar2cartesian(stats["speed"], dir * (TAU / 4))
+	
+	randomize()
+	var random_angle = randf() * 2 * PI
+	randomize()
+	var random_radius = (randf() * roam_radius) / 2 + roam_radius / 2
+	target = global_position + Vector2(cos(random_angle) * random_radius, sin(random_angle) * random_radius)
+	slow_radius = target.distance_to(global_position) / 2
+	_physics_process(true)
 
 
 func stop_move():
 	$MoveTimer.wait_time = rand_range(0.0, 2.0)
-	# Stop moving the NPC.
-	velocity = Vector2.ZERO
+	_physics_process(false)
 
 
 # Begin an attack at the specified angle in radians.

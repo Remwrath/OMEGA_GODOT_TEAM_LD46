@@ -46,8 +46,12 @@ var stats = {}
 # To manually move the NPC, set this instead of calling a move function directly.
 var velocity = Vector2.ZERO
 var target = Vector2.ZERO
-var roam_radius = 80.0
+
+var roam_radius = 150.0
 var slow_radius = 15.0
+var arrive_distance = 70.0
+var follow = false
+
 
 func _ready():
 	# Random number generation will always result in the same values each
@@ -85,20 +89,24 @@ func _physics_process(_delta):
 		speed) #add mass for dragging
 
 	move_and_slide(velocity)
-
+	if not in_mob:
+		return
+	
+	if global_position.distance_to(target) < arrive_distance and not follow:
+		set_physics_process(false)
+		#set up timer and wander when not in_mob or for in_mob but with distance to mob larger than x
 
 func _process(_delta):
 	pass
 
 func _follow_mob():
-	print("NPC moves")
+	follow = true
 	set_physics_process(true)
 
 func _unfollow_mob():
 	#check in which range it is, it may wander in a given radius
-	print("NPC stopped")
-	#do not stop immediately, try to reach inner circle (need radius)
-	set_physics_process(false)
+	follow = false
+
 
 func get_mob():
 	var mob = get_node("../Mob")
@@ -118,6 +126,9 @@ func react(message, mob):
 # Call to make the NPC join the mob.
 func join_mob():
 	#Global.get_mob().gain_member(self);
+	if in_mob:
+		return
+
 	get_mob().gain_member(self);
 	self.in_mob = true
 

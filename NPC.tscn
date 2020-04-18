@@ -62,7 +62,6 @@ one_shot = true
 [node name="Attack" type="Area2D" parent="."]
 
 [node name="VisualHitbox" type="Line2D" parent="Attack"]
-visible = false
 points = PoolVector2Array( 32, 0, 96, 0 )
 width = 16.0
 default_color = Color( 1, 0, 0, 1 )

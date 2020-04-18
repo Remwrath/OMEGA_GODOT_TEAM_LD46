@@ -140,12 +140,13 @@ func join_mob():
 
 	get_mob().gain_member(self);
 	self.in_mob = true
+	$TempSprite.default_color = "f80202" # temmp
 
 
 # Call to make the NPC leave the mob.
 func leave_mob():
 	self.in_mob = false
-
+	$TempSprite.default_color = "6680ff" # temp
 
 func start_move():
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)

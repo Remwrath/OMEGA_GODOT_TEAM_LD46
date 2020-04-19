@@ -20,7 +20,7 @@ const SLOGANS = [
 ]
 
 var type_stats = {
-	Type.INSTIGATOR : {"speed" : 50, "commitment" : 12, "in_mob" : true},
+	Type.INSTIGATOR : {"speed" : 50, "commitment" : 12},
 	Type.PAWN : {"speed" : 25},
 	Type.DEMIHUMAN : {"speed" : 50},
 	Type.CLERIC : {"speed" : 50},
@@ -74,6 +74,8 @@ func _ready():
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 	$AttackTimer.wait_time = rand_range(0.0, 2.0)
 
+	#randomize initial commitment
+	commitment = round(rand_range(-11, 11))
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
 	test_commitment()
@@ -112,13 +114,13 @@ func _physics_process(delta):
 	#move_and_slide((target - global_position).normalized() * 50.0)
 	if get_slide_count():
 		queue_clear_cooldown = min(queue_clear_cooldown, 0.5)
-	
+
 	if queue_clear_cooldown < 0.0:
 		mob_pathfinding_queue.resize(0)
 		queue_clear_cooldown = 0.5 + randf() * 0.25
-	
+
 	queue_clear_cooldown -= delta
-	
+
 	#this causes big issues
 #	if global_position.distance_to(target) < arrive_distance and not follow:
 #		set_physics_process(false)
@@ -130,7 +132,7 @@ func _process(delta):
 	$Label.text = str(commitment)
 	if in_mob:
 		$TempSprite.default_color = Color(.2, .9, .2)
-		
+
 	if not in_mob:
 		$TempSprite.default_color = Color(.2, .2, .2)
 
@@ -244,7 +246,7 @@ func test_commitment():
 	elif commitment >= 10:
 		if not in_mob:
 			join_mob()
-	
+
 
 #NOT USED
 func buff(buff_range):

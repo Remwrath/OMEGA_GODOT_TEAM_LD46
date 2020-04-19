@@ -5,6 +5,8 @@ signal mob_started_movement
 signal mob_stopped_movement
 signal mob_count_changed
 signal npc_commitment_incremented
+signal chant_cooldown_started
+signal chant_cooldown_timeouted
 
 # Steering vars.
 export var max_speed := 60
@@ -23,6 +25,9 @@ var members = []
 
 # NPCs that enter $chant_ring will be in this, neutral, enemy, mob units, all of them in this list
 var npcs_in_proximity = []
+
+# Chant cooldown timer
+onready var chant_cooldown := $ChantCooldown
 
 # NOT USED
 # State of mob. 
@@ -69,8 +74,12 @@ func _unhandled_input(event):
 
 # Currently chants to all npcs within outer ring area.
 func chant(message):
-	for n in range(npcs_in_proximity.size()):
-		npcs_in_proximity[n].chant(message)
+	if chant_cooldown.is_stopped():
+		chant_cooldown.start()
+		emit_signal("chant_cooldown_started")
+		
+		for n in range(npcs_in_proximity.size()):
+			npcs_in_proximity[n].chant(message)
 
 
 func gain_member(npc):

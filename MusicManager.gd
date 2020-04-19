@@ -11,8 +11,8 @@ func _ready():
 	for track in tracks:
 		var player = AudioStreamPlayer.new()
 		player.stream = track
-		player.autoplay = true
 		add_child(player)
+		player.call_deferred("play")
 		
 		players.push_back(player)
 	

@@ -11,10 +11,12 @@ func _ready():
 	for track in tracks:
 		var player = AudioStreamPlayer.new()
 		player.stream = track
+		player.autoplay = true
 		add_child(player)
-		player.play()
 		
 		players.push_back(player)
+	
+	set_intensity(intensity)
 
 func set_intensity(value):
 	intensity = value
@@ -24,4 +26,6 @@ func set_intensity(value):
 		var end_intensity = float(i) / (track_count - 1)
 		
 		var volume = clamp(inverse_lerp(start_intensity, end_intensity, intensity), 0.0, 1.0)
-		players[i].volume_db = 10 * log(volume) + 10 # Percent to decibel
+		if players.size():
+			players[i].volume_db = 10 * log(volume) - 10 # Percent to decibel
+			print(str(i) + " : " + str(players[i].volume_db))

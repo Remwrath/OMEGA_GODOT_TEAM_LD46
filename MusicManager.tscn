@@ -1,12 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://MusicManager.gd" type="Script" id=1]
 [ext_resource path="res://Music/track1.ogg" type="AudioStream" id=2]
 [ext_resource path="res://Music/track2.ogg" type="AudioStream" id=3]
 [ext_resource path="res://Music/track3.ogg" type="AudioStream" id=4]
 [ext_resource path="res://Music/track4.ogg" type="AudioStream" id=5]
+[ext_resource path="res://Music/track5.ogg" type="AudioStream" id=6]
 
 [node name="MusicManager" type="Node"]
 script = ExtResource( 1 )
-intensity = 0.951
-tracks = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ]
+tracks = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ) ]

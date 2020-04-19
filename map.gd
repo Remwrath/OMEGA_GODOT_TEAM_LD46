@@ -14,7 +14,7 @@ func _ready():
 func add_npc(position: Vector2, type):
 	var new_npc = load("res://NPC.tscn")
 	var npc_instance = new_npc.instance()
-	npc_instance.stats.type = type
+	npc_instance.type = type
 	npc_instance.position = position
 	add_child(npc_instance)
 

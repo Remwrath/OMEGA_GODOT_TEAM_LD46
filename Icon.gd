@@ -1,50 +1,57 @@
 extends Control
 
-# fill this with names of the ui buttons
+# Fill this with names of the UI buttons.
 const buttons = []
-const buttonNames = []
-var buttonCode = ''
+const button_names = []
 
-onready var cd = $cooldown
-export var cooldown = 10
-export var title = 'empty'
-export var count = 0
 signal clicked
+
+export var cooldown = 10
+export var title = "empty"
+export var count = 0
+
+var button_code = ""
 var timer = 0
 
-# Called when the node enters the scene tree for the first time.
+onready var cd = $Cooldown
+
 func _ready():
 	timer = cooldown
 	cd.rect_size.x = 0
 	pass # Replace with function body.
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	timer = max(0, timer-delta)
-	cd.rect_size.x = 32 * (timer/cooldown)
 
-func startCooldown():
+func _process(delta):
+	timer = max(0, timer - delta)
+	cd.rect_size.x = 32 * (timer / cooldown)
+
+
+func _input(event):
+	if count > 0 and (event.is_pressed() and event.is_action(button_code) or event is InputEventMouseButton and event.pressed):
+		emit_signal("clicked")
+
+
+func start_cooldown():
 	timer = cooldown
 
-func parseAbility(ability):
+
+func parse_ability(ability):
 	cooldown = ability.cooldown
 	title = ability.title
-	$icon.disabled = false
-	$icon.texture_normal = ability.get_node("icon").texture
-	$icon.texture_hover = ability.get_node("iconHover").texture
+	$Icon.disabled = false
+	$Icon.texture_normal = ability.get_node("icon").texture
+	$Icon.texture_hover = ability.get_node("icon_hover").texture
 	count = 1
 	timer = 0
 
-func removeAbility():
-	count = max(0, count-1)
+
+func remove_ability():
+	count = max(0, count - 1)
 	if count == 0:
-		title = 'empty'
-		$icon.disabled = true
+		title = "empty"
+		$Icon.disabled = true
 
-func setButton(n):
-	$button.text = buttonNames[n]
-	buttonCode = buttons[n]
 
-func _input(event):
-	if count>0 and (event.is_pressed() and event.is_action(buttonCode) or event is InputEventMouseButton and event.pressed):
-		emit_signal("clicked")
+func set_button(n):
+	$Button.text = button_names[n]
+	button_code = buttons[n]

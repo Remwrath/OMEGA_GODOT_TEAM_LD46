@@ -1,6 +1,7 @@
 extends Node2D
 
-# reference to level is saved as a variable so levels can be swapped out without needing to alter references elsewhere in code
+# Reference to level is saved as a variable so levels can be swapped out
+# without needing to alter references elsewhere in code.
 onready var level = $TestLevel
 
 func _ready():
@@ -23,13 +24,14 @@ func generate_random_npcs(amount):
 	for _i in range(amount):
 		var type = NPC.Type.DEMIHUMAN if randf() < 0.5 else NPC.Type.CLERIC
 		var npc_pos = Vector2(rand_range(-200, 200), rand_range(-200, 200))
-		#if the NPC would spawn inside a wall, pick a different spawn point
+		# If the NPC would spawn inside a wall, pick a different spawn point.
 		while not is_valid_spawn_point(npc_pos):
 			npc_pos = Vector2(rand_range(-200, 200), rand_range(-200, 200))
 		add_npc(npc_pos, type)
 
-# checks whether a chosen spawn point is inside a wall
+
+# Checks whether a chosen spawn point is inside a wall.
 func is_valid_spawn_point(coords):
 	var tile_coords = level.get_node("Tilemap").world_to_map(coords)
 	var cell = level.get_node("Tilemap").get_cellv(tile_coords)
-	return (cell == -1) # if the cell has an index of -1, it's empty and therefore a valid spawn point
+	return (cell == -1) # If the cell has an index of -1, it's empty and therefore a valid spawn point.

@@ -1,28 +1,26 @@
 extends CanvasLayer
 
 const icon = preload("res://Icon.tscn")
-var abilityStack = []
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+var ability_stack = []
 
-func registerAbility(ability):
-	for icon in abilityStack:
+func register_ability(ability):
+	for icon in ability_stack:
 		if icon.title == ability.title:
 			icon.count += 1
 			return
-	for i in range(abilityStack.size()):
-		if abilityStack[i].title == 'empty':
-			abilityStack[i].parseAbility(ability)
+	for i in range(ability_stack.size()):
+		if ability_stack[i].title == "empty":
+			ability_stack[i].parse_ability(ability)
 			return
 	var i = icon.instance()
-	i.setButton(abilityStack.size())
-	i.parseAbility(ability)
-	abilityStack.insert(i)
+	i.set_button(ability_stack.size())
+	i.parse_ability(ability)
+	ability_stack.insert(i)
 	$Abilities.add_child(i)
-	
-func removeAbility(ability):
-	for icon in abilityStack:
+
+
+func remove_ability(ability):
+	for icon in ability_stack:
 		if icon.title == ability.title:
-			icon.removeAbility()
+			icon.remove_ability()

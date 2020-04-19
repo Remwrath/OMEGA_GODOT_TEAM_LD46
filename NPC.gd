@@ -82,7 +82,7 @@ func _ready():
 # Move the NPC by whatever the velocity was set to in other functions.
 func _physics_process(_delta):
 	if in_mob:
-		#REPLACE
+		#REPLACE if npc is already inside mobs' chant_ring, they don't need to move to the exact center!
 		target = get_mob().global_position
 	velocity = Steering.arrive_to(
 		velocity,
@@ -90,6 +90,7 @@ func _physics_process(_delta):
 		target,
 		speed) # Add mass for dragging.
 	move_and_slide(velocity)
+	
 	#this causes big issues
 #	if global_position.distance_to(target) < arrive_distance and not follow:
 #		set_physics_process(false)
@@ -133,7 +134,6 @@ func chant(message):
 			body.react(message, self)
 
 
-# Should only be called if in_mob is false.
 # Receive message from chant and decide if joining mob
 func react(message, mob):
 	if trigger_slogans.find(message):
@@ -208,15 +208,11 @@ func _on_body_entered(body):
 
 
 func _on_attacked(damage):
-#	print("attacked")
 	commitment -= damage
 	test_commitment()
-#	print("was attacked, committment: " + str(commitment))
 
 
 func test_commitment():
-#	if commitment < -5:
-		
 	if commitment < 10:
 		if in_mob:
 			leave_mob()
@@ -225,5 +221,6 @@ func test_commitment():
 			join_mob()
 	
 
+#NOT USED
 func buff(buff_range):
 	pass

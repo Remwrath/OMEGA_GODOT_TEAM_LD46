@@ -27,6 +27,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Steering="*res://Steering.gd"
+MusicManager="*res://MusicManager.tscn"
 
 [display]
 

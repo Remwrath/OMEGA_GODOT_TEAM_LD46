@@ -23,7 +23,9 @@ var members = []
 var state = "idle"
 
 func _ready():
-	set_process(false)
+#	set_process(false)
+	$chant_ring.connect("body_entered", self, "_on_body_entered_chant_ring")
+	pass
 
 # MOVEMENT
 
@@ -60,8 +62,9 @@ func _unhandled_input(event):
 			target_position = get_global_mouse_position() # GUI will add target on objective.
 			set_process(true)
 
-
+#Currently chants to mob members; change to send chant to all npcs within outer ring area
 func chant(message):
+	print(message)
 	for member in members:
 		member.chant(message)
 	# For NPC in bodies in ChantArea call.
@@ -70,15 +73,15 @@ func chant(message):
 func gain_member(npc):
 	members.append(npc)
 	# warning-ignore-all:return_value_discarded
-	connect("mob_started_movement", npc, "_follow_mob")
-	connect("mob_stopped_movement", npc, "_unfollow_mob")
-	print("Mob has %s members" % [members.size()])
+#	connect("mob_started_movement", npc, "_follow_mob")
+#	connect("mob_stopped_movement", npc, "_unfollow_mob")
+#	print("Mob has %s members" % [members.size()])
 
 
 func lose_member(npc):
+#	disconnect("mob_started_movement", npc, "_follow_mob")
+#	disconnect("mob_stopped_movement", npc, "_unfollow_mob")
 	members.erase(npc)
-	disconnect("mob_started_movement", npc, "_follow_mob")
-	disconnect("mob_stopped_movement", npc, "_unfollow_mob")
 
 
 # Changes the mobs state and acts accordingly.
@@ -89,4 +92,8 @@ func change_state(new_state):
 
 # Trigger a npc to execute a random action?
 func trigger_npc_action():
+	pass
+
+func _on_body_entered_chant_ring(body):
+#	print(body)
 	pass

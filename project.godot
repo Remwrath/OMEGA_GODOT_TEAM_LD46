@@ -30,8 +30,8 @@ Steering="*res://Steering.gd"
 
 [display]
 
-window/size/width=640
-window/size/height=360
+window/size/width=1920
+window/size/height=1080
 window/size/fullscreen=true
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"

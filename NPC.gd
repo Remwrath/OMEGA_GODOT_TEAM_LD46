@@ -62,7 +62,7 @@ func _ready():
 	$MoveTimer.connect("timeout", self, "start_move")
 	# When WaitTimer is triggered, the NPC should stop moving.
 	$WaitTimer.connect("timeout", self, "stop_move")
-	#when the  AttackTimer triggered check for enemeies in range and attack if can
+	#when the  AttackTimer triggered check for enemeies in range and attack if can.
 	$AttackTimer.connect("timeout", self, "_on_attack_timer")
 	$Attack.connect("body_entered", self, "_on_body_entered")
 	# Each timer should start the other so the NPC alternates between moving and standing still.
@@ -118,11 +118,13 @@ func get_mob():
 	var mob = get_node("../Mob")
 	return mob
 
+
 func chant(message):
 	var nearby_bodies = $Attack.get_overlapping_bodies()
 	for body in nearby_bodies:
 		if body.is_in_group("npc"):
 			body.react(message, self)
+
 
 # Should only be called if in_mob is false.
 # Receive message from chant and decide if joining mob
@@ -146,7 +148,7 @@ func join_mob():
 
 	get_mob().gain_member(self);
 	self.in_mob = true
-	$TempSprite.default_color = "f80202" # temmp
+	$TempSprite.default_color = "f80202" # temp
 
 
 # Call to make the NPC leave the mob.
@@ -155,6 +157,7 @@ func leave_mob():
 	self.in_mob = false
 	$TempSprite.default_color = "6680ff" # temp
 
+
 func start_move():
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 	if self.in_mob:
@@ -162,7 +165,6 @@ func start_move():
 
 	randomize()
 	var random_angle = randf() * TAU
-	randomize()
 	var random_radius = (randf() * roam_radius) / 2 + roam_radius / 2
 	target = global_position + Vector2(cos(random_angle) * random_radius, sin(random_angle) * random_radius)
 	slow_radius = target.distance_to(global_position) / 2
@@ -184,27 +186,31 @@ func attack_angle(angle):
 # For example, attack_vector(Vector2.RIGHT) begins a right-facing attack.
 func attack_vector(direction):
 	attack_angle(atan2(direction.y, direction.x))
-	
+
+
 func _on_attack_timer():
-	#enable physics
 	$Attack.set_physics_process(true)
 	$AttackTimer.wait_time = rand_range(1.0, 2.0)
 
+
 func _on_body_entered(body):
-	if body.get("in_mob") != null and in_mob != body.in_mob and ((in_mob and body.commitment < 0) or (!in_mob and body.commitment >= 10)) :
+	if body.get("in_mob") != null and in_mob != body.in_mob and ((in_mob and body.commitment < 0) or (!in_mob and body.commitment >= 10)):
 		attack_vector(body.position - position)
-		body._on_attacked(1) #use specific npc damage
+		body._on_attacked(1) # Use specific NPC damage.
 	$Attack.set_physics_process(false)
-	
+
+
 func _on_attacked(damage):
 	commitment -= damage
 	test_commitment()
-	
+
+
 func test_commitment():
 	if in_mob and commitment < 10:
 		leave_mob()
 	elif !in_mob and commitment >= 10:
 		join_mob()
+
 
 func buff(buff_range):
 	pass

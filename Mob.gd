@@ -25,7 +25,7 @@ var state = "idle"
 func _ready():
 	set_process(false)
 
-# MOVEMENT 
+# MOVEMENT
 
 func _process(delta):
 	if track_cursor:

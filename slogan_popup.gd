@@ -6,9 +6,10 @@ var is_open := false
 
 func _ready():
 	for slogan in NPC.SLOGANS:
-		var slogan_button: = SLOGAN_BUTTON.instance()
+		var slogan_button := SLOGAN_BUTTON.instance()
 		slogan_button.get_node("SloganText").text = slogan
 		$GridContainer.add_child(slogan_button)
+		# warning-ignore:return_value_discarded
 		slogan_button.connect("pressed", self, "on_slogan_selected", [slogan])
 	
 	visible = false
@@ -30,7 +31,7 @@ func get_mob():
 func open_popup():
 	is_open = true
 	visible = true
-	rect_position = get_global_mouse_position() - rect_size * .5
+	rect_position = get_global_mouse_position() - rect_size * 0.5
 
 
 func close_popup():

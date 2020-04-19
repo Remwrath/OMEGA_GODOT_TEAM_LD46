@@ -185,7 +185,7 @@ func _on_attack_timer():
 
 func _on_body_entered(body):
 	if body.get("in_mob") != null and in_mob != body.in_mob:
-		attack_vector((position - body.position).normalized())
+		attack_vector(body.position - position)
 		body._on_attacked(10) #use specific npc damage
 	$Attack.set_physics_process(false)
 	

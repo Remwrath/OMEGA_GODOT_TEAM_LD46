@@ -139,9 +139,12 @@ func react(message, mob):
 	if trigger_slogans.find(message):
 		commitment += 5
 #		print(name + " has increased his commitment to " + str(commitment))
-	else:
-		commitment -= 5
+	
 	test_commitment()
+
+	# Receive message from chant and decide if joining mob.
+	# Mock code to join always and test following.
+	#join_mob()
 
 
 # Call to make the NPC join the mob.

@@ -37,6 +37,17 @@ var type_stats = {
 var state = States.IDLE
 var direction = "left" setget set_direction
 
+var type_abilities  = {
+	Type.INSTIGATOR : {"title" : "AbilityA", "cooldown" : 5, "texture":""},
+	Type.PAWN : {"title" : "Chant", "cooldown" : 5, "texture":""},
+	Type.DEMIHUMAN : {"title" : "AbilityC", "cooldown" : 5, "texture":""},
+	Type.CLERIC : {"title" : "AbilityD", "cooldown" : 5, "texture":""},
+	Type.ELF : {"title" : "AbilityE", "cooldown" : 5, "texture":""},
+	Type.ALCHEMIST : {"title" : "AbilityF", "cooldown" : 5, "texture":""},
+	Type.SORCERER : {"title" : "AbilityG", "cooldown" : 5, "texture":""},
+}
+
+var ability = type_abilities[Type.PAWN]
 var in_mob = false
 var speed = 25
 var type = Type.PAWN
@@ -79,7 +90,7 @@ func _ready():
 	$AttackTimer.connect("timeout", self, "_on_attack_timer")
 	$Attack.connect("body_entered", self, "_on_body_entered")
 	# Each timer should start the other so the NPC alternates between moving and standing still.
-	
+
 	#$MoveTimer.connect("timeout", $WaitTimer, "start")
 	#$WaitTimer.connect("timeout", $MoveTimer, "start")
 
@@ -92,6 +103,7 @@ func _ready():
 
 	#Randomize initial commitment
 	commitment = round(rand_range(-10, 1))
+	ability = type_abilities[type]
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
 	test_commitment()
@@ -123,14 +135,14 @@ func _physics_process(delta):
 		target,
 		speed) # Add mass for dragging.
 	velocity = move_and_slide(velocity)
-	
+
 	self.direction = Steering.direction_4_way(velocity.angle())
-	
+
 	if velocity.length() < 0.1:
 		change_state(States.IDLE)
-	else: 
+	else:
 		change_state(States.RUN)
-	
+
 	#move_and_slide((target - global_position).normalized() * 50.0)
 	if get_slide_count():
 		queue_clear_cooldown = min(queue_clear_cooldown, 0.5)
@@ -308,7 +320,7 @@ func commitment_change(damage):
 func set_direction(new_direction):
 	if new_direction == "up" or new_direction == "down" or new_direction == direction:
 		return
-	
+
 	direction = new_direction
 	$Sprite.flip_h = !$Sprite.flip_h
 

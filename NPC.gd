@@ -79,17 +79,45 @@ func _ready():
 	test_commitment()
 #	print(type," ", commitment," ", in_mob)
 
+var queue_clear_cooldown = 0.0
+var mob_pathfinding_queue = []
+
+var chant_relocate_cooldown = 0.0
+
 # Move the NPC by whatever the velocity was set to in other functions.
-func _physics_process(_delta):
+func _physics_process(delta):
 	if in_mob:
+		chant_relocate_cooldown -= delta
 		#REPLACE if npc is already inside mobs' chant_ring, they don't need to move to the exact center!
-		target = get_mob().global_position
+		if get_mob().npcs_in_proximity.has(self):
+			if chant_relocate_cooldown < 0.0:
+				target = get_mob().global_position + Vector2(randf() * 500.0 - 250.0, randf() * 500.0 - 250.0)
+				chant_relocate_cooldown = 0.5
+		else:
+			while mob_pathfinding_queue.size() and mob_pathfinding_queue[0].distance_squared_to(global_position) < 5 * 5:
+				mob_pathfinding_queue.remove(0)
+			if mob_pathfinding_queue.size():
+				target = mob_pathfinding_queue[0]
+				#global_position = global_position.move_toward(target, 1.0)
+				#move_and_slide((target - global_position).normalized() * 500.0)
+				#print(target)
+			else:
+				mob_pathfinding_queue = get_tree().current_scene.get_simple_path(global_position, get_mob().global_position)
 	velocity = Steering.arrive_to(
 		velocity,
 		global_position,
 		target,
 		speed) # Add mass for dragging.
 	move_and_slide(velocity)
+	#move_and_slide((target - global_position).normalized() * 50.0)
+	if get_slide_count():
+		queue_clear_cooldown = min(queue_clear_cooldown, 0.5)
+	
+	if queue_clear_cooldown < 0.0:
+		mob_pathfinding_queue.resize(0)
+		queue_clear_cooldown = 0.5 + randf() * 0.25
+	
+	queue_clear_cooldown -= delta
 	
 	#this causes big issues
 #	if global_position.distance_to(target) < arrive_distance and not follow:
@@ -172,12 +200,12 @@ func start_move():
 	var random_radius = (randf() * roam_radius) / 2 + roam_radius / 2
 	target = global_position + Vector2(cos(random_angle) * random_radius, sin(random_angle) * random_radius)
 	slow_radius = target.distance_to(global_position) / 2
-	_physics_process(true)
+	#set_physics_process(true)
 
 
 func stop_move():
 	$MoveTimer.wait_time = rand_range(0.0, 2.0)
-	_physics_process(false)
+	#set_physics_process(false)
 
 
 # Begin an attack at the specified angle in radians.

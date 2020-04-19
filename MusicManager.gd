@@ -1,4 +1,4 @@
-tool
+#tool
 extends Node
 
 export(float, 0.0, 1.0) var intensity = 0.0 setget set_intensity

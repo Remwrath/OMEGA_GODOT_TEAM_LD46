@@ -43,3 +43,7 @@ __meta__ = {
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
+
+[node name="ChantCooldown" type="Timer" parent="."]
+one_shot = true
+[connection signal="timeout" from="ChantCooldown" to="." method="emit_signal" binds= [ "chant_cooldown_timeouted" ]]

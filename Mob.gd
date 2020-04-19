@@ -19,12 +19,15 @@ var stats = {"speed": 50}
 # List of npcs that makes up the mob? 
 var members = []
 
+var npcs_in_proximity = []
+
 # State of mob.
 var state = "idle"
 
 func _ready():
 #	set_process(false)
 	$chant_ring.connect("body_entered", self, "_on_body_entered_chant_ring")
+	$chant_ring.connect("body_exited", self, "_on_body_exited_chant_ring")
 	pass
 
 # MOVEMENT
@@ -64,11 +67,12 @@ func _unhandled_input(event):
 
 #Currently chants to mob members; change to send chant to all npcs within outer ring area
 func chant(message):
-	print(message)
-	for member in members:
-		member.chant(message)
+#	print(message)
+#	for member in members:
+#		member.chant(message)
 	# For NPC in bodies in ChantArea call.
-
+	for n in range(npcs_in_proximity.size()):
+		npcs_in_proximity[n].chant(message)
 
 func gain_member(npc):
 	members.append(npc)
@@ -95,5 +99,9 @@ func trigger_npc_action():
 	pass
 
 func _on_body_entered_chant_ring(body):
-#	print(body)
-	pass
+	if not npcs_in_proximity.has(body):
+		npcs_in_proximity.append(body)
+		
+func _on_body_exited_chant_ring(body):
+	if npcs_in_proximity.has(body):
+		npcs_in_proximity.remove(npcs_in_proximity.find(body))

@@ -75,7 +75,7 @@ func _ready():
 	$AttackTimer.wait_time = rand_range(0.0, 2.0)
 
 	#randomize initial commitment
-	commitment = round(rand_range(-11, 11))
+	commitment = round(rand_range(-10, 1))
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
 	test_commitment()
@@ -158,6 +158,8 @@ func get_mob():
 
 
 func chant(message):
+	if !in_mob:
+		return
 	var nearby_bodies = $Attack.get_overlapping_bodies()
 	for body in nearby_bodies:
 		if body.is_in_group("npc"):
@@ -167,11 +169,10 @@ func chant(message):
 # Receive message from chant and decide if joining mob
 func react(message, mob):
 	if trigger_slogans.find(message):
-		commitment += 2
+		commitment_change(2)
 #		print(name + " has increased his commitment to " + str(commitment))
 	else:
-		commitment -=1
-	test_commitment()
+		commitment_change(-1)
 
 
 # Call to make the NPC join the mob.
@@ -245,8 +246,7 @@ func _on_body_entered(body):
 	body._on_attacked(damage) # Use specific NPC damage.
 
 func _on_attacked(damage):
-	commitment -= damage
-	test_commitment()
+	commitment_change(-damage)
 
 
 func test_commitment():
@@ -257,6 +257,14 @@ func test_commitment():
 		if not in_mob:
 			join_mob()
 
+func commitment_change(damage):
+	commitment += damage
+	test_commitment()
+	var new_commitment_change = load("res://commitment_change.tscn")
+	var commitment_change_instance = new_commitment_change.instance()
+	commitment_change_instance.damage = damage
+	commitment_change_instance.position = position
+	add_child(commitment_change_instance)
 
 #NOT USED
 func buff(buff_range):

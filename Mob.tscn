@@ -16,6 +16,8 @@ script = ExtResource( 1 )
 shape = SubResource( 1 )
 
 [node name="chant_ring" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
 
 [node name="chant_ring_collision" type="CollisionShape2D" parent="chant_ring"]
 shape = SubResource( 2 )

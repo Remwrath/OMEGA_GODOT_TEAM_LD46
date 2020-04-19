@@ -19,26 +19,25 @@ var stats = {"speed": 50}
 # List of npcs that makes up the mob? 
 var members = []
 
+# NPCs that enter $chant_ring will be in this, neutral, enemy, mob units, all of them in this list
 var npcs_in_proximity = []
 
-# State of mob.
+# NOT USED
+# State of mob. 
 var state = "idle"
 
 func _ready():
-#	set_process(false)
 	$chant_ring.connect("body_entered", self, "_on_body_entered_chant_ring")
 	$chant_ring.connect("body_exited", self, "_on_body_exited_chant_ring")
-	pass
 
-# MOVEMENT
 
+# MOVEMENT (might be best to move to physics?)
 func _process(delta):
 	if track_cursor:
 		target_position = get_global_mouse_position()
 	var dist = global_position.distance_to(target_position)
 	
 	if dist < DISTANCE_THRESHOLD:
-		set_process(false)
 		emit_signal("mob_stopped_movement")
 		return
 	
@@ -65,38 +64,39 @@ func _unhandled_input(event):
 			target_position = get_global_mouse_position() # GUI will add target on objective.
 			set_process(true)
 
-#Currently chants to mob members; change to send chant to all npcs within outer ring area
+#Currently chants to all npcs within outer ring area
 func chant(message):
-#	print(message)
-#	for member in members:
-#		member.chant(message)
-	# For NPC in bodies in ChantArea call.
 	for n in range(npcs_in_proximity.size()):
 		npcs_in_proximity[n].chant(message)
 
 func gain_member(npc):
 	members.append(npc)
-	# warning-ignore-all:return_value_discarded
+	# warning-ignore-all:return_value_discarded 
+	#some errors going on with this
 #	connect("mob_started_movement", npc, "_follow_mob")
 #	connect("mob_stopped_movement", npc, "_unfollow_mob")
 #	print("Mob has %s members" % [members.size()])
 
 
 func lose_member(npc):
+	#some errors going on with this
 #	disconnect("mob_started_movement", npc, "_follow_mob")
 #	disconnect("mob_stopped_movement", npc, "_unfollow_mob")
 	members.erase(npc)
 
 
+#NOT USED
 # Changes the mobs state and acts accordingly.
 func change_state(new_state):
 	if state == "idle":
 		pass
 
 
+#NOT USED
 # Trigger a npc to execute a random action?
 func trigger_npc_action():
 	pass
+
 
 func _on_body_entered_chant_ring(body):
 	if not npcs_in_proximity.has(body):

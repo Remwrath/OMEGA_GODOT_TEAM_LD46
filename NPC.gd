@@ -47,7 +47,7 @@ var target = Vector2.ZERO
 var roam_radius = 75
 var slow_radius = 5.5
 var arrive_distance = 35
-var follow = false
+#var follow = false
 
 
 func _ready():
@@ -142,14 +142,14 @@ func set_stats(stats):
 		self[stat] = stats[stat]
 
 
-func _follow_mob():
-	follow = true
-	set_physics_process(true)
-
-
-func _unfollow_mob():
-	# Check in which range it is, it may wander in a given radius.
-	follow = false
+#func _follow_mob():
+#	follow = true
+#	set_physics_process(true)
+#
+#
+#func _unfollow_mob():
+#	# Check in which range it is, it may wander in a given radius.
+#	follow = false
 
 
 func get_mob():
@@ -228,9 +228,19 @@ func _on_attack_timer():
 	$AttackTimer.start()
 
 func _on_body_entered(body):
-	if body.get("in_mob") != null and in_mob != body.in_mob and ((in_mob and body.commitment < 0) or (!in_mob and body.commitment >= 10)):
-		attack_vector(body.position - position)
-		body._on_attacked(1) # Use specific NPC damage.
+	if body.get("in_mob") == null:
+		return
+	if in_mob == body.in_mob:
+		return
+	if in_mob:
+		if body.commitment > 0:
+			return
+	elif commitment > 0: #not in mob, indifferent
+		return
+	#otherwise not in mob and against it
+
+	attack_vector(body.position - position)
+	body._on_attacked(1) # Use specific NPC damage.
 #	$Attack.set_physics_process(false)
 
 

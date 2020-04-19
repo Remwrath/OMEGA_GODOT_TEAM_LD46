@@ -209,11 +209,8 @@ func chant(message):
 
 # Receive message from chant and decide if joining mob
 func react(message, mob):
-	if trigger_slogans.find(message):
-		commitment_change(2)
-		#print(name + " has increased his commitment to " + str(commitment))
-	else:
-		commitment_change(-1)
+	var change_amount = 2 if trigger_slogans.find(message) else -1
+	commitment_change(change_amount)
 
 
 # Call to make the NPC join the mob.
@@ -221,7 +218,7 @@ func join_mob():
 	#Global.get_mob().gain_member(self);
 	if in_mob:
 		return
-
+	
 	get_mob().gain_member(self);
 	self.in_mob = true
 	$TempSprite.default_color = "f80202" # temp
@@ -309,6 +306,8 @@ func test_commitment():
 
 func commitment_change(damage):
 	commitment += damage
+	if in_mob:
+		get_mob().emit_signal("npc_commitment_incremented", damage)
 	test_commitment()
 	var new_commitment_change = load("res://commitment_change.tscn")
 	var commitment_change_instance = new_commitment_change.instance()

@@ -13,6 +13,11 @@ enum Type {
 	# Keep types agnostic
 }
 
+enum States {
+	IDLE,
+	RUN
+}
+
 const SLOGANS = [
 	"Eggs", #placeholder
 	"Milk",
@@ -28,6 +33,9 @@ var type_stats = {
 	Type.ALCHEMIST : {"speed" : 50},
 	Type.SORCERER : {"speed" : 50},
 }
+
+var state = States.IDLE
+var direction = "left" setget set_direction
 
 var in_mob = false
 var speed = 25
@@ -58,6 +66,7 @@ func _ready():
 	# Random number generation will always result in the same values each
 	# time the script is restarted, unless we call this function to
 	# generate a time-based seed.
+	change_state(States.IDLE)
 	randomize()
 	# Generate random slogans that the npc will react to.
 	trigger_slogans = [SLOGANS[randi() % len(SLOGANS) - 1], SLOGANS[randi() % len(SLOGANS) - 1]]
@@ -70,15 +79,18 @@ func _ready():
 	$AttackTimer.connect("timeout", self, "_on_attack_timer")
 	$Attack.connect("body_entered", self, "_on_body_entered")
 	# Each timer should start the other so the NPC alternates between moving and standing still.
-	$MoveTimer.connect("timeout", $WaitTimer, "start")
-	$WaitTimer.connect("timeout", $MoveTimer, "start")
+	
+	#$MoveTimer.connect("timeout", $WaitTimer, "start")
+	#$WaitTimer.connect("timeout", $MoveTimer, "start")
 
 	# Randomise the timers.
 	$MoveTimer.wait_time = rand_range(0.0, 2.0)
 	$WaitTimer.wait_time = rand_range(0.0, 2.0)
 	$AttackTimer.wait_time = rand_range(0.0, 2.0)
 
-	# Randomize initial commitment.
+	$MoveTimer.start()
+
+	#Randomize initial commitment
 	commitment = round(rand_range(-10, 1))
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
@@ -110,7 +122,15 @@ func _physics_process(delta):
 		global_position,
 		target,
 		speed) # Add mass for dragging.
-	move_and_slide(velocity)
+	velocity = move_and_slide(velocity)
+	
+	self.direction = Steering.direction_4_way(velocity.angle())
+	
+	if velocity.length() < 0.1:
+		change_state(States.IDLE)
+	else: 
+		change_state(States.RUN)
+	
 	#move_and_slide((target - global_position).normalized() * 50.0)
 	if get_slide_count():
 		queue_clear_cooldown = min(queue_clear_cooldown, 0.5)
@@ -140,6 +160,16 @@ func set_stats(new_stats):
 	for stat in new_stats:
 		self[stat] = new_stats[stat]
 
+func change_state(new_state):
+	if new_state == state:
+		return
+	state = new_state
+	match state:
+		States.IDLE:
+			velocity = Vector2.ZERO # just to be sure
+			$SpriteAnimationPlayer.play("idle")
+		States.RUN:
+			$SpriteAnimationPlayer.play("run")
 
 #func _follow_mob():
 #	follow = true
@@ -193,7 +223,8 @@ func leave_mob():
 
 
 func start_move():
-	$WaitTimer.wait_time = rand_range(0.0, 2.0)
+	randomize()
+	$WaitTimer.wait_time = rand_range(4.0, 6.0)
 	if self.in_mob:
 		return
 
@@ -202,11 +233,16 @@ func start_move():
 	var random_radius = (randf() * roam_radius) / 2 + roam_radius / 2
 	target = global_position + Vector2(cos(random_angle) * random_radius, sin(random_angle) * random_radius)
 	slow_radius = target.distance_to(global_position) / 2
+	change_state(States.RUN)
+	$WaitTimer.start()
 	#set_physics_process(true)
 
 
 func stop_move():
-	$MoveTimer.wait_time = rand_range(0.0, 2.0)
+	change_state(States.IDLE)
+	randomize()
+	$MoveTimer.wait_time = rand_range(4.0, 6.0) #force stop to use idle state
+	$MoveTimer.start()
 	#set_physics_process(false)
 
 
@@ -268,6 +304,13 @@ func commitment_change(damage):
 	commitment_change_instance.position = position
 	add_child(commitment_change_instance)
 
+
+func set_direction(new_direction):
+	if new_direction == "up" or new_direction == "down" or new_direction == direction:
+		return
+	
+	direction = new_direction
+	$Sprite.flip_h = !$Sprite.flip_h
 
 # NOT USED YET
 func buff(buff_range):

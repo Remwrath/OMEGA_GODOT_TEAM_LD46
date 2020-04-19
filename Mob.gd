@@ -50,7 +50,7 @@ func _process(delta):
 func _unhandled_input(event):
 	# Mouse steering.
 	if event is InputEventMouseButton:
-		if event.pressed: # Follow cursor.
+		if event.is_action_pressed("click"): # Follow cursor.
 			track_cursor = true
 			set_process(true)
 			emit_signal("mob_started_movement")

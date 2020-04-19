@@ -76,7 +76,8 @@ func _ready():
 
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
-
+	test_commitment()
+	print(type," ", commitment," ", in_mob)
 
 # Move the NPC by whatever the velocity was set to in other functions.
 func _physics_process(_delta):
@@ -117,12 +118,17 @@ func get_mob():
 	var mob = get_node("../Mob")
 	return mob
 
+func chant(message):
+	var nearby_bodies = $Attack.get_overlapping_bodies()
+	for body in nearby_bodies:
+		if body.is_in_group("npc"):
+			body.react(message, self)
 
 # Should only be called if in_mob is false.
 # Receive message from chant and decide if joining mob
 func react(message, mob):
 	if trigger_slogans.find(message):
-		commitment += 1
+		commitment += 5
 		print(name + " has increased his commitment to " + str(commitment))
 	
 	test_commitment()
@@ -145,6 +151,7 @@ func join_mob():
 
 # Call to make the NPC leave the mob.
 func leave_mob():
+	get_mob().lose_member(self)
 	self.in_mob = false
 	$TempSprite.default_color = "6680ff" # temp
 
@@ -184,9 +191,9 @@ func _on_attack_timer():
 	$AttackTimer.wait_time = rand_range(1.0, 2.0)
 
 func _on_body_entered(body):
-	if body.get("in_mob") != null and in_mob != body.in_mob:
+	if body.get("in_mob") != null and in_mob != body.in_mob and ((in_mob and body.commitment < 0) or (!in_mob and body.commitment >= 10)) :
 		attack_vector(body.position - position)
-		body._on_attacked(10) #use specific npc damage
+		body._on_attacked(1) #use specific npc damage
 	$Attack.set_physics_process(false)
 	
 func _on_attacked(damage):

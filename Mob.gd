@@ -62,10 +62,8 @@ func _unhandled_input(event):
 
 
 func chant(message):
-	var nearby_bodies = $OuterArea.get_overlapping_bodies()
-	for body in nearby_bodies:
-		if body.is_in_group("npc"):
-			body.react(message, self)
+	for member in members:
+		member.chant(message)
 	# For NPC in bodies in ChantArea call.
 
 
@@ -78,6 +76,7 @@ func gain_member(npc):
 
 
 func lose_member(npc):
+	members.erase(npc)
 	disconnect("mob_started_movement", npc, "_follow_mob")
 	disconnect("mob_stopped_movement", npc, "_unfollow_mob")
 

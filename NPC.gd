@@ -218,7 +218,7 @@ func join_mob():
 	#Global.get_mob().gain_member(self);
 	if in_mob:
 		return
-	
+	$Sprite.modulate = Color(1, 0, 0)
 	get_mob().gain_member(self);
 	self.in_mob = true
 	$TempSprite.default_color = "f80202" # temp
@@ -226,6 +226,7 @@ func join_mob():
 
 # Call to make the NPC leave the mob.
 func leave_mob():
+	$Sprite.modulate = Color(1, 1, 1)
 	get_mob().lose_member(self)
 	self.in_mob = false
 	$TempSprite.default_color = "6680ff" # temp

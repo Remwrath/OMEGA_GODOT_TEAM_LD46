@@ -167,10 +167,10 @@ func chant(message):
 # Receive message from chant and decide if joining mob
 func react(message, mob):
 	if trigger_slogans.find(message):
-		commitment += 5
+		commitment += 2
 #		print(name + " has increased his commitment to " + str(commitment))
 	else:
-		commitment -=5
+		commitment -=1
 	test_commitment()
 
 
@@ -228,21 +228,21 @@ func _on_attack_timer():
 	$AttackTimer.start()
 
 func _on_body_entered(body):
+	var damage = -1
 	if body.get("in_mob") == null:
 		return
 	if in_mob == body.in_mob:
 		return
-	if in_mob:
-		if body.commitment > 0:
+	if !in_mob:
+		damage = 1
+		if commitment > 0:
 			return
-	elif commitment > 0: #not in mob, indifferent
+	elif body.commitment > 0: #not in mob, indifferent
 		return
 	#otherwise not in mob and against it
 
 	attack_vector(body.position - position)
-	body._on_attacked(1) # Use specific NPC damage.
-#	$Attack.set_physics_process(false)
-
+	body._on_attacked(damage) # Use specific NPC damage.
 
 func _on_attacked(damage):
 	commitment -= damage

@@ -20,7 +20,7 @@ const SLOGANS = [
 ]
 
 var type_stats = {
-	Type.INSTIGATOR : {"speed" : 50, "commitment" : 100, "in_mob" : true},
+	Type.INSTIGATOR : {"speed" : 50, "commitment" : 12, "in_mob" : true},
 	Type.PAWN : {"speed" : 25},
 	Type.DEMIHUMAN : {"speed" : 50},
 	Type.CLERIC : {"speed" : 50},
@@ -77,26 +77,33 @@ func _ready():
 	# Set states for type overriding defaults.
 	set_stats(type_stats[type])
 	test_commitment()
-	print(type," ", commitment," ", in_mob)
+#	print(type," ", commitment," ", in_mob)
 
 # Move the NPC by whatever the velocity was set to in other functions.
 func _physics_process(_delta):
 	if in_mob:
+		#REPLACE
 		target = get_mob().global_position
-
 	velocity = Steering.arrive_to(
 		velocity,
 		global_position,
 		target,
 		speed) # Add mass for dragging.
-
 	move_and_slide(velocity)
-	if not in_mob:
-		return
-	
-	if global_position.distance_to(target) < arrive_distance and not follow:
-		set_physics_process(false)
+	#this causes big issues
+#	if global_position.distance_to(target) < arrive_distance and not follow:
+#		set_physics_process(false)
+#		$MoveTimer.start()
 		# Set up timer and wander when not in_mob or for in_mob but with distance to mob larger than x.
+
+
+func _process(delta):
+	$Label.text = str(commitment)
+	if in_mob:
+		$TempSprite.default_color = Color(.2, .9, .2)
+		
+	if not in_mob:
+		$TempSprite.default_color = Color(.2, .2, .2)
 
 
 func set_stats(stats):
@@ -131,7 +138,7 @@ func chant(message):
 func react(message, mob):
 	if trigger_slogans.find(message):
 		commitment += 5
-		print(name + " has increased his commitment to " + str(commitment))
+#		print(name + " has increased his commitment to " + str(commitment))
 	
 	test_commitment()
 
@@ -191,26 +198,32 @@ func attack_vector(direction):
 func _on_attack_timer():
 	$Attack.set_physics_process(true)
 	$AttackTimer.wait_time = rand_range(1.0, 2.0)
-
+	$AttackTimer.start()
 
 func _on_body_entered(body):
 	if body.get("in_mob") != null and in_mob != body.in_mob and ((in_mob and body.commitment < 0) or (!in_mob and body.commitment >= 10)):
 		attack_vector(body.position - position)
 		body._on_attacked(1) # Use specific NPC damage.
-	$Attack.set_physics_process(false)
+#	$Attack.set_physics_process(false)
 
 
 func _on_attacked(damage):
+#	print("attacked")
 	commitment -= damage
 	test_commitment()
+#	print("was attacked, committment: " + str(commitment))
 
 
 func test_commitment():
-	if in_mob and commitment < 10:
-		leave_mob()
-	elif !in_mob and commitment >= 10:
-		join_mob()
-
+#	if commitment < -5:
+		
+	if commitment < 10:
+		if in_mob:
+			leave_mob()
+	elif commitment >= 10:
+		if not in_mob:
+			join_mob()
+	
 
 func buff(buff_range):
 	pass

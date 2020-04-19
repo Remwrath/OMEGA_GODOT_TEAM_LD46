@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const icon = preload("res://Icon.tscn")
+const icon = preload("res://Ability.tscn")
 
 var ability_stack = []
 

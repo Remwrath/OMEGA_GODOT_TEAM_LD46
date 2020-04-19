@@ -30,7 +30,7 @@ tracks/1/path = NodePath("Attack/CollisionShape2D:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
-tracks/1/enabled = true
+tracks/1/enabled = false
 tracks/1/keys = {
 "times": PoolRealArray( 0, 0.25 ),
 "transitions": PoolRealArray( 1, 1 ),
@@ -81,3 +81,13 @@ anims/attack = SubResource( 3 )
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 2.0
+autostart = true
+
+[node name="Label" type="Label" parent="."]
+margin_left = -8.57079
+margin_top = -6.20656
+margin_right = 31.4292
+margin_bottom = 7.79344
+__meta__ = {
+"_edit_use_anchors_": false
+}

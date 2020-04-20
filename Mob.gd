@@ -34,8 +34,8 @@ onready var chant_cooldown := $ChantCooldown
 var state = "idle"
 
 func _ready():
-	$chant_ring.connect("body_entered", self, "_on_body_entered_chant_ring")
-	$chant_ring.connect("body_exited", self, "_on_body_exited_chant_ring")
+	$ChantRing.connect("body_entered", self, "_on_body_entered_chant_ring")
+	$ChantRing.connect("body_exited", self, "_on_body_exited_chant_ring")
 
 
 # MOVEMENT (might be best to move to physics?)
@@ -88,7 +88,7 @@ func gain_member(npc):
 	emit_signal("mob_count_changed", members.size())
 	emit_signal("npc_commitment_incremented", npc.commitment)
 	# warning-ignore-all:return_value_discarded 
-	#some errors going on with this
+	# Some errors going on with this.
 #	connect("mob_started_movement", npc, "_follow_mob")
 #	connect("mob_stopped_movement", npc, "_unfollow_mob")
 #	print("Mob has %s members" % [members.size()])
@@ -98,7 +98,7 @@ func lose_member(npc):
 	$"../UI".remove_ability(npc.ability)
 	emit_signal("mob_count_changed", members.size())
 	emit_signal("npc_commitment_incremented", -npc.commitment)
-	#some errors going on with this
+	# Some errors going on with this.
 #	disconnect("mob_started_movement", npc, "_follow_mob")
 #	disconnect("mob_stopped_movement", npc, "_unfollow_mob")
 	members.erase(npc)

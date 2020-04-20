@@ -13,16 +13,6 @@ enum Type {
 	# Keep types agnostic
 }
 
-#it could be even easier if we decide a folder structure that groups in folder based on type
-var texture_paths = {
-	Type.PAWN: ["res://Sprites/Characters/generic_var1.png", 
-				"res://Sprites/Characters/generic_var2.png", 
-				"res://Sprites/Characters/generic_var3.png", 
-				"res://Sprites/Characters/generic_var4.png", 
-				"res://Sprites/Characters/generic_var5.png",
-				"res://Sprites/Characters/generic_var6.png"]
-}
-
 enum States {
 	IDLE,
 	RUN
@@ -33,6 +23,21 @@ const SLOGANS = [
 	"Milk",
 	"Bread"
 ]
+
+# Used to periodically check commitment and decrease if too distant.
+export (float) var MOB_MAX_DISTANCE = 120.0 
+export (int) var COMMITMENT_LOOSE = -2
+# Commitment timer is set in inspector and triggers every 15 seconds.
+
+# It could be even easier if we decide a folder structure that groups in folder based on type.
+var texture_paths = {
+	Type.PAWN: ["res://Sprites/Characters/generic_var1.png", 
+				"res://Sprites/Characters/generic_var2.png", 
+				"res://Sprites/Characters/generic_var3.png", 
+				"res://Sprites/Characters/generic_var4.png", 
+				"res://Sprites/Characters/generic_var5.png",
+				"res://Sprites/Characters/generic_var6.png"]
+}
 
 var type_stats = {
 	Type.INSTIGATOR : {"speed" : 50, "commitment" : 12},
@@ -82,11 +87,6 @@ var mob_pathfinding_queue = []
 
 var chant_relocate_cooldown = 0.0
 
-#used to periodically check commitment and decrease if too distant
-export (float) var MOB_MAX_DISTANCE = 120.0 
-export (int) var COMMITMENT_LOOSE = -2
-#Commitment timer is set in inspector and triggers every 15 seconds
-
 func _ready():
 	# Random number generation will always result in the same values each
 	# time the script is restarted, unless we call this function to
@@ -115,7 +115,7 @@ func _ready():
 
 	$MoveTimer.start()
 
-	#Randomize initial commitment
+	# Randomize initial commitment.
 	commitment = round(rand_range(-10, 1))
 	ability = type_abilities[type]
 	# Set states for type overriding defaults.
@@ -167,7 +167,7 @@ func _physics_process(delta):
 
 	queue_clear_cooldown -= delta
 
-	#this causes big issues
+	# This causes big issues.
 	#if global_position.distance_to(target) < arrive_distance and not follow:
 		#set_physics_process(false)
 		#$MoveTimer.start()
@@ -186,6 +186,7 @@ func set_stats(new_stats):
 	for stat in new_stats:
 		self[stat] = new_stats[stat]
 
+
 func change_state(new_state):
 	if new_state == state:
 		return
@@ -196,6 +197,7 @@ func change_state(new_state):
 			$SpriteAnimationPlayer.play("idle")
 		States.RUN:
 			$SpriteAnimationPlayer.play("run")
+
 
 #func _follow_mob():
 #	follow = true
@@ -265,7 +267,7 @@ func start_move():
 func stop_move():
 	change_state(States.IDLE)
 	randomize()
-	$MoveTimer.wait_time = rand_range(4.0, 6.0) #force stop to use idle state
+	$MoveTimer.wait_time = rand_range(4.0, 6.0) # Force stop to use idle state.
 	$MoveTimer.start()
 	#set_physics_process(false)
 
@@ -278,8 +280,8 @@ func attack_angle(angle):
 
 # Begin an attack in the direction of the specified vector.
 # For example, attack_vector(Vector2.RIGHT) begins a right-facing attack.
-func attack_vector(direction):
-	attack_angle(atan2(direction.y, direction.x))
+func attack_vector(new_direction):
+	attack_angle(atan2(new_direction.y, new_direction.x))
 
 
 func _on_attack_timer():
@@ -330,6 +332,7 @@ func commitment_change(damage):
 	commitment_change_instance.position = position
 	add_child(commitment_change_instance)
 
+
 func set_direction(new_direction):
 	if new_direction == "up" or new_direction == "down" or new_direction == direction:
 		return
@@ -337,17 +340,19 @@ func set_direction(new_direction):
 	direction = new_direction
 	$Sprite.flip_h = !$Sprite.flip_h
 
+
 func set_type(new_type):
 	if type == new_type:
 		return
 	type = new_type
 	
-	#load random texture associated with type
+	# Load random texture associated with type.
 	var paths = texture_paths[type] if texture_paths.has(type) else texture_paths[Type.PAWN]
 	randomize()
 	var index = randi() % paths.size() 
 	$Sprite.texture = load(paths[index])
-	#load outline sprite (add sprites above or edit the path string)
+	# Load outline sprite (add sprites above or edit the path string).
+
 
 # NOT USED YET
 func buff(buff_range):

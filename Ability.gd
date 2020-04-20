@@ -59,6 +59,8 @@ func remove_ability():
 
 
 func set_button(n):
+	if n >= button_names.size() or n >= buttons.size()  :
+		return
 	$Hotkey.text = button_names[n] # button_names[n] TODO
 	button_code = buttons[n] # buttons[n] TODO
 

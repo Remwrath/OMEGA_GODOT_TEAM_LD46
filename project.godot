@@ -9,12 +9,18 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Control",
+"class": "HexMenu",
+"language": "GDScript",
+"path": "res://HexMenu.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "NPC",
 "language": "GDScript",
 "path": "res://NPC.gd"
 } ]
 _global_script_class_icons={
+"HexMenu": "",
 "NPC": ""
 }
 
@@ -53,6 +59,10 @@ ability_1={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":90,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[layer_names]
+
+2d_physics/layer_20="ChoiceLayer"
 
 [physics]
 

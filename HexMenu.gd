@@ -1,4 +1,5 @@
 extends Control
+class_name HexMenu
 
 signal selected_choice(name)
 
@@ -23,16 +24,17 @@ func _ready() -> void:
 	for pol in all_polygons: #reset others
 			pol.color = default_color
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	self.open = Input.is_action_pressed("secondary_click")
 	
 	var res = space_state.intersect_point(get_global_mouse_position(),
-		32, [], 0x7FFFFFFF, false, true)
+		32, [], 524288, false, true)
+	
+	for pol in all_polygons: #reset others
+		pol.color = default_color
 	
 	#highlight hovering choice
 	if res.size() > 0:
-		for pol in all_polygons: #reset others
-			pol.color = default_color
 		var collider = res[0].collider
 		var polygon: Polygon2D = collider.get_parent().get_child(0)
 		polygon.color = highlight_color
@@ -47,13 +49,13 @@ func set_open(value):
 		center = get_global_mouse_position() - rect_size * 0.5
 		rect_position = center
 	else:
-		var angle = (center - get_global_mouse_position() ).angle()
-		
+		# The below line is never used?
+		# var angle = (center - get_global_mouse_position() ).angle()
 		
 		var res = space_state.intersect_point(get_global_mouse_position(),
-			32, [], 0x7FFFFFFF, false, true)
+			32, [], 524288, false, true)
 
 		if res.size() > 0:
 			var collider = res[0].collider
-			var name = collider.get_parent().get_name()
-			emit_signal("selected_choice", [name])
+			var choice_name = collider.get_parent().name
+			emit_signal("selected_choice", choice_name)

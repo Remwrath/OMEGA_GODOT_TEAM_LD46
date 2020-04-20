@@ -140,3 +140,8 @@ frame = 2
 [node name="SpriteAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/idle = SubResource( 4 )
 anims/run = SubResource( 5 )
+
+[node name="CommitmentTimer" type="Timer" parent="."]
+wait_time = 15.0
+autostart = true
+[connection signal="timeout" from="CommitmentTimer" to="." method="_on_CommitmentTimer_timeout"]

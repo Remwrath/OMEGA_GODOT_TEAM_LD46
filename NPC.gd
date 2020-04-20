@@ -72,6 +72,10 @@ var mob_pathfinding_queue = []
 
 var chant_relocate_cooldown = 0.0
 
+#used to periodically check commitment and decrease if too distant
+export (float) var MOB_MAX_DISTANCE = 120.0 
+export (int) var COMMITMENT_LOOSE = -2
+#Commitment timer is set in inspector and triggers every 15 seconds
 
 func _ready():
 	# Random number generation will always result in the same values each
@@ -315,7 +319,6 @@ func commitment_change(damage):
 	commitment_change_instance.position = position
 	add_child(commitment_change_instance)
 
-
 func set_direction(new_direction):
 	if new_direction == "up" or new_direction == "down" or new_direction == direction:
 		return
@@ -326,3 +329,10 @@ func set_direction(new_direction):
 # NOT USED YET
 func buff(buff_range):
 	pass
+
+
+func _on_CommitmentTimer_timeout() -> void:
+	if not in_mob:
+		return
+	if global_position.distance_to(get_mob().global_position) > MOB_MAX_DISTANCE:
+		commitment_change(COMMITMENT_LOOSE)

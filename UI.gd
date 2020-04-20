@@ -24,4 +24,3 @@ func remove_ability(ability):
 	for icon in ability_stack:
 		if icon.title == ability.title:
 			icon.remove_ability()
-

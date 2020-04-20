@@ -21,8 +21,9 @@ func _ready() -> void:
 					$Choice4/Polygon2D,
 					$Choice5/Polygon2D,
 					$Choice6/Polygon2D]
-	for pol in all_polygons: #reset others
+	for pol in all_polygons: # Reset others.
 			pol.color = default_color
+
 
 func _process(_delta: float) -> void:
 	self.open = Input.is_action_pressed("secondary_click")

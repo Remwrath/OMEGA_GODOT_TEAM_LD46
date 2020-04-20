@@ -68,4 +68,3 @@ func set_button(n):
 func set_count(n):
 	count = max(0, n)
 	$AbilityCount.text = "x%d" % n
-	

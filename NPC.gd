@@ -203,8 +203,8 @@ func get_mob():
 
 
 func chant(message):
-	if !in_mob:
-		return
+#	if !in_mob:
+#		return
 	var nearby_bodies = $Attack.get_overlapping_bodies()
 	for body in nearby_bodies:
 		if body.is_in_group("npc"):

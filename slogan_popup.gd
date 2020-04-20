@@ -1,74 +1,56 @@
-extends Control
+extends HexMenu
 
-const SLOGAN_BUTTON := preload("res://SloganButton.tscn")
+# Set this to the height of the CooldownProgress inside each Choice
+const PROGRESS_CONTROL_HEIGHT := 37
 
-var is_open := false
+var is_cooling_down
 
 func _ready():
 	var mob = get_mob()
-	for slogan in NPC.SLOGANS:
-		var slogan_button := SLOGAN_BUTTON.instance()
-		slogan_button.get_node("SloganText").text = slogan
-		
-		var slogan_cooldown := slogan_button.get_node("Cooldown")
-		slogan_cooldown.max_value = mob.get_node("ChantCooldown").wait_time
-		
-		$GridContainer.add_child(slogan_button)
-		# warning-ignore:return_value_discarded
-		slogan_button.connect("pressed", self, "on_slogan_selected", [slogan])
 	
-	visible = false
+	# Hide every choice. We'll show only the one's that got assigned with a slogan
+	for choice in get_children():
+		choice.hide()
+	
+	var child_index := 0
+	for slogan in NPC.SLOGANS:
+		var choice = get_child(child_index)
+		choice.get_node("Label").text = slogan
+		choice.show()
+		child_index += 1
+	
 	mob.connect("chant_cooldown_started", self, "on_chant_cooldown_started")
 	mob.connect("chant_cooldown_timeouted", self, "on_chant_cooldown_timeouted")
-	set_process(false)
-
-
-func _input(event):
-	if event.is_action_pressed("secondary_click"):
-		if is_open:
-			close_popup()
-		else:
-			open_popup()
-		get_tree().set_input_as_handled()
-
+	
 
 func _process(_delta):
-	var chant_timer = get_mob().chant_cooldown
-	for button in $GridContainer.get_children():
-		button.get_node("Cooldown").value = chant_timer.time_left
+	# Update the CooldownProgress 
+	if is_cooling_down:
+		var chant_timer = get_mob().chant_cooldown
+		for choice in get_children():
+			var cooldown_progress = choice.get_node("CooldownProgress")
+			# The progress works by resizing the height of the Progress itself
+			cooldown_progress.rect_size = Vector2(cooldown_progress.rect_size.x, PROGRESS_CONTROL_HEIGHT * chant_timer.time_left / chant_timer.wait_time)
 
 
 func get_mob():
-	return $"../../Mob"
+	return $"../Mob"
 
-
-func open_popup():
-	is_open = true
-	visible = true
-	rect_position = get_global_mouse_position() - rect_size * 0.5
-
-
-func close_popup():
-	is_open = false
-	visible = false
-
-
-func on_slogan_selected(slogan):
-	get_mob().chant(slogan)
-	close_popup()
+# This gets connected to the HexMenu's selected_choice siganl
+func on_choice_selected(choice):
+	# Chant when not cooling down
+	if !is_cooling_down:
+		get_mob().chant(get_node(choice + "/Label").text)
 
 
 func on_chant_cooldown_started():
-	for button in $GridContainer.get_children():
-		button.get_node("Cooldown").show()
-		button.disabled = true
-	
-	set_process(true)
+	for choice in get_children():
+		choice.get_node("CooldownProgress").show()
+		is_cooling_down = true
+
 
 
 func on_chant_cooldown_timeouted():
-	for button in $GridContainer.get_children():
-		button.get_node("Cooldown").hide()
-		button.disabled = false
-	
-	set_process(false)
+	for choice in get_children():
+		choice.get_node("CooldownProgress").hide()
+		is_cooling_down = false

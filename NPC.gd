@@ -13,6 +13,16 @@ enum Type {
 	# Keep types agnostic
 }
 
+#it could be even easier if we decide a folder structure that groups in folder based on type
+var texture_paths = {
+	Type.PAWN: ["res://Sprites/Characters/generic_var1.png", 
+				"res://Sprites/Characters/generic_var2.png", 
+				"res://Sprites/Characters/generic_var3.png", 
+				"res://Sprites/Characters/generic_var4.png", 
+				"res://Sprites/Characters/generic_var5.png",
+				"res://Sprites/Characters/generic_var6.png"]
+}
+
 enum States {
 	IDLE,
 	RUN
@@ -50,7 +60,7 @@ var type_abilities  = {
 var ability = type_abilities[Type.PAWN]
 var in_mob = false
 var speed = 25
-var type = Type.PAWN
+var type = Type.PAWN setget set_type
 var commitment = 0
 var trigger_slogans = []
 var attack_range = 60
@@ -326,6 +336,18 @@ func set_direction(new_direction):
 
 	direction = new_direction
 	$Sprite.flip_h = !$Sprite.flip_h
+
+func set_type(new_type):
+	if type == new_type:
+		return
+	type = new_type
+	
+	#load random texture associated with type
+	var paths = texture_paths[type] if texture_paths.has(type) else texture_paths[Type.PAWN]
+	randomize()
+	var index = randi() % paths.size() 
+	$Sprite.texture = load(paths[index])
+	#load outline sprite (add sprites above or edit the path string)
 
 # NOT USED YET
 func buff(buff_range):
